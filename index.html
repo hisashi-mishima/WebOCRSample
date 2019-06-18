@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<base target="_top">
+<title>Tesseract.js</title>
+<script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
+<script>
+// ユーザ指定のファイルを読み込み、画像認識の関数を呼び出す。
+function read_in() {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    //選択された画像をimg要素として表示する。
+    document.getElementById("read_image").src = e.target.result;
+    //画像認識を行う
+    recognize_image();
+  }
+  // 画像ファイルをdata URLとして読み込むように指示しておく。
+  reader.readAsDataURL(document.getElementById("input_image_file").files[0]);
+}
+
+
+// 画像認識を行う。
+function recognize_image() {
+  //結果出力先の要素を取得する。
+  const txt_out = document.getElementById("text_of_read_image");
+  //複数回、連続して実行するときのために、最初に中身を捨てる。
+  txt_out.innerHTML = "";
+  const msg = document.getElementById("msg");
+  msg.textContent = "[処理を開始しました。]\n";
+
+  var whitelist_chars = "0123456789０１２３４５６７８９";
+
+  //画像認識
+  Tesseract.recognize(
+    document.getElementById("read_image").src,
+    { 
+        //lang: 'jpn',
+      tessedit_char_whitelist: whitelist_chars
+    })
+  .progress(message => { console.log('progress is: ', message); })
+  .catch(e => {
+    msg.textContent += "[エラーです: " + e + "]";
+    console.log("エラーです: " + e);
+  })
+  .then(result =>{
+    txt_out.innerHTML = result.text;
+    read_in();
+  })
+  .finally(r => {
+    //msg.textContent += "[処理が終わりました]\n";
+  });
+}
+
+</script>
+</head>
+<body class="main-text-only">
+カメラ起動
+<input type=file accept="image/*" capture=environment>
+
+<table style="margin: auto;">
+<tr><th>認識対象画像</th><th>読み取り結果</th></tr>
+<tr>
+<td style="overflow: auto;"><img id="read_image" style="max-width: 450px; max-height: 450px;" /></td>
+<td id="text_of_read_image" style="white-space: pre; font-family: monospace;"></td>
+</tr>
+</table>
+<p id="msg" style="color: darkred; font-style: italic; overflow: auto; max-height: 10ex;"></p>
+</body>
+</html>

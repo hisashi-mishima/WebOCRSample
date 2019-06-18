@@ -54,8 +54,13 @@ function recognize_image() {
 </script>
 </head>
 <body class="main-text-only">
+<form>
 カメラ起動
-<input type=file accept="image/*" capture=environment onchange="read_in()">
+<input type=file accept="image/*" capture=environment>
+
+読み込み
+<input type="button" value="読み込んで" onclick="read_in()">
+</form>
 
 <table style="margin: auto;">
 <tr><th>認識対象画像</th><th>読み取り結果</th></tr>

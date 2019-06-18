@@ -45,7 +45,6 @@ function recognize_image() {
   })
   .then(result =>{
     txt_out.innerHTML = result.text;
-    read_in();
   })
   .finally(r => {
     //msg.textContent += "[処理が終わりました]\n";
@@ -56,7 +55,7 @@ function recognize_image() {
 </head>
 <body class="main-text-only">
 カメラ起動
-<input type=file accept="image/*" capture=environment>
+<input type=file accept="image/*" capture=environment onchange="read_in()">
 
 <table style="margin: auto;">
 <tr><th>認識対象画像</th><th>読み取り結果</th></tr>
